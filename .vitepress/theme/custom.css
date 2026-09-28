@@ -17,20 +17,20 @@ html[data-home-page] .tk-right-bottom-button .back-top {
 }
 
 @media (min-width: 960px) {
-  .VPDoc.has-sidebar .content {
+  .VPDoc.has-sidebar > .container > .content {
     padding-left: 56px;
   }
 }
 
-/* 右侧「本页目录」略加宽（默认栏 256、内容 224） */
+/* 右侧「本页目录」：VitePress 默认 256/224，长中文标题容易截断 */
 @media (min-width: 1280px) {
   .VPDoc .aside {
-    max-width: 280px;
+    max-width: 320px;
   }
 
   .VPDoc .aside-container,
   .VPDoc .aside-curtain {
-    width: 248px;
+    width: 288px;
   }
 }
 

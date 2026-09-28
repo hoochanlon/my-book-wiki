@@ -19,8 +19,7 @@ const shouldSkip = (el: HTMLElement) => {
   const segmented = el.closest('.tk-segmented-item')
   if (segmented instanceof HTMLElement && visibleText(segmented)) return true
 
-  const outline = el.closest(OUTLINE_SELECTOR)
-  if (outline && !isTruncated(el)) return true
+  if (el.closest(OUTLINE_SELECTOR)) return !isTruncated(el)
 
   const text = visibleText(el)
   const tip = el.getAttribute('data-tip') || el.getAttribute('title') || ''
