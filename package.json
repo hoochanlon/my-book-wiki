@@ -1,0 +1,34 @@
+{
+  "name": "my-book-wiki",
+  "version": "1.0.0",
+  "description": "把一本书蒸馏成可检索、可追溯、可累积的知识库，让它随你的阅读一起成长。",
+  "main": "index.js",
+  "scripts": {
+    "docs:dev": "vitepress dev",
+    "docs:build": "vitepress build && node scripts/alias-readme-html.mjs",
+    "docs:preview": "vitepress preview"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hoochanlon/my-book-wiki.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/hoochanlon/my-book-wiki/issues"
+  },
+  "homepage": "https://github.com/hoochanlon/my-book-wiki#readme",
+  "devDependencies": {
+    "vitepress": "^1.6.4",
+    "vitepress-sidebar": "^1.40.0",
+    "vitepress-theme-teek": "^1.6.2",
+    "vitepress-plugin-mermaid": "^2.0.0",
+    "mermaid": "^10.0.0"
+  },
+  "dependencies": {
+    "chart.js": "^4.4.0",
+    "vue-chartjs": "^5.3.0"
+  }
+}
