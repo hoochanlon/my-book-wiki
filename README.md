@@ -1,3 +1,8 @@
+---
+prev: false
+next: false
+---
+
 # My Book Wiki
 
 把一本书蒸馏成可检索、可追溯、可累积的知识库，让它随你的阅读一起成长。

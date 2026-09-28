@@ -7,6 +7,31 @@ html[data-home-page] .tk-right-bottom-button .back-top {
 :root {
   --vp-home-hero-image-background-image: linear-gradient(-45deg, #42ade2 50%, #ed4c5c);
   --vp-home-hero-image-filter: blur(68px);
+  /* 整页仍 1440：再加大会让 <1440 视口算出负边距，折叠按钮压到标题上 */
+  --vp-sidebar-width: 300px;
+}
+
+/* 正文略加宽（默认 688）；折叠按钮占用左侧槽，不要把标题顶上去 */
+.VPDoc.has-aside .content .content-container {
+  max-width: 784px;
+}
+
+@media (min-width: 960px) {
+  .VPDoc.has-sidebar .content {
+    padding-left: 56px;
+  }
+}
+
+/* 右侧「本页目录」略加宽（默认栏 256、内容 224） */
+@media (min-width: 1280px) {
+  .VPDoc .aside {
+    max-width: 280px;
+  }
+
+  .VPDoc .aside-container,
+  .VPDoc .aside-curtain {
+    width: 248px;
+  }
 }
 
 .VPHero .image-src {
@@ -53,4 +78,45 @@ html[data-home-page] .tk-right-bottom-button .back-top {
   .DocSearch-Button .DocSearch-Button-Keys {
     margin-left: auto;
   }
+}
+
+.wiki-tip {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 70;
+  max-width: min(360px, calc(100vw - 24px));
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: var(--vp-c-bg-elv);
+  color: var(--vp-c-text-1);
+  font-size: 12px;
+  line-height: 1.45;
+  font-weight: 500;
+  border: 1px solid var(--vp-c-divider);
+  box-shadow: var(--vp-shadow-2);
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(4px);
+  transition: opacity 0.16s ease, transform 0.16s ease, visibility 0.16s ease;
+}
+
+.wiki-tip.is-show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.VPNavBarMenuLink:has(.nav-home-icon) {
+  padding: 0 8px;
+}
+
+.nav-home-icon {
+  display: block;
+  width: 20px;
+  height: 20px;
+  background-color: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M12 3.2 3 11h2v9a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1v-9h2z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M12 3.2 3 11h2v9a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1v-9h2z'/%3E%3C/svg%3E") center / contain no-repeat;
 }

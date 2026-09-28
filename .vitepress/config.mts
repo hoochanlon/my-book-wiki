@@ -1,13 +1,66 @@
 import { defineConfig } from 'vitepress'
 import { withSidebar } from 'vitepress-sidebar'
 import { withMermaid } from 'vitepress-plugin-mermaid'
+import { defineTeekConfig } from 'vitepress-theme-teek/config'
 
-// https://vitepress.dev/reference/site-config
+const teekConfig = defineTeekConfig({
+  teekHome: false,
+  vpHome: true,
+  homeCardListPosition: false,
+  sidebarTrigger: true,
+  articleUpdate: {
+    enabled: false,
+  },
+  toComment: {
+    enabled: false,
+  },
+  themeEnhance: {
+    layoutSwitch: {
+      disableHelp: true,
+      disableDocMaxWidthHelp: true,
+      disablePageMaxWidthHelp: true,
+    },
+    themeColor: {
+      disableHelp: true,
+    },
+    spotlight: {
+      disableHelp: true,
+    },
+  },
+  footerInfo: {
+    copyright: {
+      createYear: 2026,
+      suffix: 'hoochanlon',
+    },
+  },
+  codeBlock: {
+    collapseHeight: 700,
+  },
+  articleAnalyze: {
+    showAuthor: false,
+    showCreateDate: true,
+    showUpdateDate: false,
+    dateFormat: 'yyyy-MM-dd',
+  },
+  docAnalysis: {
+    wordCount: true,
+    readingTime: true,
+  },
+  vitePlugins: {
+    sidebar: false,
+    permalink: false,
+    mdH1: false,
+  },
+})
+
 export default withMermaid(
   withSidebar(
     defineConfig({
+    extends: teekConfig,
     title: "读书笔记知识库",
     description: "把一本书蒸馏成可检索、可追溯、可累积的知识库",
+    lang: 'zh-CN',
+    lastUpdated: true,
     base: '/my-book-wiki/',
     ignoreDeadLinks: true,
     rewrites: {
@@ -15,10 +68,12 @@ export default withMermaid(
     },
 
     themeConfig: {
-      // https://vitepress.dev/reference/default-theme-config
       logo: '/icons/books.svg',
       nav: [
-        { text: '首页', link: '/' },
+        {
+          text: '<span class="nav-home-icon" aria-hidden="true"></span><span class="visually-hidden">首页</span>',
+          link: '/',
+        },
       ],
 
       socialLinks: [
@@ -37,34 +92,20 @@ export default withMermaid(
         },
       },
 
-      // 关闭文档底部的"最近更新"时间戳
-      lastUpdated: false,
-
-      // Teek：关闭文章页底部「最近更新」栏
-      articleUpdate: {
-        enabled: false,
-      },
-
-      // Teek：关闭右下角「滚动到评论区」按钮
-      toComment: {
-        enabled: false,
-      },
-
-      // Teek 主题配置
-      homeCardListPosition: false, // 关闭首页右侧卡片栏
-      sidebarTrigger: true, // 文章页显示侧边栏折叠按钮
-
-      // 只留 Teek 页脚，避免和 VitePress footer 各写一遍版权
-      footerInfo: {
-        copyright: {
-          createYear: 2026,
-          suffix: 'hoochanlon',
+      lastUpdated: {
+        text: '上次更新时间',
+        formatOptions: {
+          dateStyle: 'short',
+          timeStyle: 'short',
         },
       },
-
-      // 超高代码块默认折叠；展开/折叠状态由主题侧 sessionStorage 记住
-      codeBlock: {
-        collapseHeight: 700,
+      editLink: {
+        pattern: 'https://github.com/hoochanlon/my-book-wiki/edit/master/:path',
+        text: '在 GitHub 上编辑此页',
+      },
+      docFooter: {
+        prev: '上一页',
+        next: '下一页',
       },
     },
 
@@ -72,16 +113,7 @@ export default withMermaid(
       lineNumbers: true
     },
 
-    // SSR 时让 Vite 打包 teek，避免 Node 解析 vitepress/theme 的无后缀导入失败
-    vite: {
-      ssr: {
-        noExternal: ['vitepress-theme-teek'],
-      },
-    },
-
-    // Mermaid 配置（可选）
     mermaid: {
-      // 主题配置
     }
   }),
   {
@@ -95,14 +127,19 @@ export default withMermaid(
     useFolderLinkFromIndexFile: false,
     hyphenToSpace: true,
     underscoreToSpace: true,
-    excludeFiles: ['index.md', 'README.md'],
-    excludeFolders: ['.vitepress', '.github', 'node_modules'],
+    excludeByGlobPattern: [
+      'index.md',
+      'README.md',
+      'about.md',
+      '.vitepress/**',
+      '.github/**',
+      'node_modules/**',
+    ],
     sortMenusByName: false,
     sortMenusByFrontmatterOrder: false,
     sortMenusOrderByDescending: false,
     collapsed: false,
     capitalizeFirst: false,
     capitalizeEachWords: false,
-    rootGroupCollapsed: false,
   })
 )
