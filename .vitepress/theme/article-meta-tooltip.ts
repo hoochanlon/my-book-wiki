@@ -3,16 +3,42 @@ import type { Router } from 'vitepress'
 const TITLE_SELECTOR = '[title]'
 const TIP_SELECTOR = '[data-tip]'
 const OUTLINE_SELECTOR = '.tk-aside-outline-item, .VPDocOutlineItem, .VPDocAsideOutline'
+const SKIP_SELECTOR = [
+  '.VPSwitchAppearance',
+  '.color-list',
+  '.tk-theme-enhance h3',
+].join(', ')
 
 const isTruncated = (el: HTMLElement) => el.scrollWidth - el.clientWidth > 1
 
-const isOutlineItem = (el: HTMLElement) => Boolean(el.closest(OUTLINE_SELECTOR))
+const visibleText = (el: HTMLElement) => el.innerText.replace(/\s+/g, ' ').trim()
+
+const shouldSkip = (el: HTMLElement) => {
+  if (el.closest(SKIP_SELECTOR)) return true
+
+  const segmented = el.closest('.tk-segmented-item')
+  if (segmented instanceof HTMLElement && visibleText(segmented)) return true
+
+  const outline = el.closest(OUTLINE_SELECTOR)
+  if (outline && !isTruncated(el)) return true
+
+  const text = visibleText(el)
+  const tip = el.getAttribute('data-tip') || el.getAttribute('title') || ''
+  if (text && (text === tip || tip.includes(text))) return true
+
+  return false
+}
 
 const upgradeNativeTitles = (root: ParentNode = document) => {
   root.querySelectorAll<HTMLElement>(TITLE_SELECTOR).forEach((el) => {
     if (el.closest('.wiki-tip')) return
     const title = el.getAttribute('title')?.trim()
     if (!title) return
+    if (shouldSkip(el)) {
+      el.removeAttribute('title')
+      el.removeAttribute('data-tip')
+      return
+    }
     el.setAttribute('data-tip', title)
     el.removeAttribute('title')
   })
@@ -62,7 +88,7 @@ export const setupArticleMetaTooltip = (router: Router) => {
   }
 
   const show = (anchor: HTMLElement) => {
-    if (isOutlineItem(anchor) && !isTruncated(anchor)) {
+    if (shouldSkip(anchor) || !anchor.getAttribute('data-tip')) {
       hide()
       return
     }
@@ -83,7 +109,6 @@ export const setupArticleMetaTooltip = (router: Router) => {
       if (!(titled instanceof HTMLElement)) return
 
       upgradeNativeTitles(titled)
-      if (!titled.hasAttribute('data-tip')) return
       show(titled)
     },
     true
