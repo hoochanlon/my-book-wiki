@@ -84,7 +84,7 @@ html[data-home-page] .tk-right-bottom-button .back-top {
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 70;
+  z-index: 10000;
   max-width: min(360px, calc(100vw - 24px));
   padding: 6px 10px;
   border-radius: 6px;

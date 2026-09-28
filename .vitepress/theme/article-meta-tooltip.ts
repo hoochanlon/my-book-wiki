@@ -1,32 +1,17 @@
 import type { Router } from 'vitepress'
 
-const META_SOURCE_SELECTOR = [
-  '.tk-article-analyze a[title]',
-  '.tk-article-info a[title]',
-].join(', ')
-
-const OUTLINE_SOURCE_SELECTOR = [
-  '.tk-aside-outline-item a[title]',
-  '.VPDocOutlineItem a[title]',
-].join(', ')
-
-const SOURCE_SELECTOR = `${META_SOURCE_SELECTOR}, ${OUTLINE_SOURCE_SELECTOR}`
-
-const META_TIP_SELECTOR = [
-  '.tk-article-analyze a[data-tip]',
-  '.tk-article-info a[data-tip]',
-].join(', ')
-
-const OUTLINE_TIP_SELECTOR = [
-  '.tk-aside-outline-item a[data-tip]',
-  '.VPDocOutlineItem a[data-tip]',
-].join(', ')
+const TITLE_SELECTOR = '[title]'
+const TIP_SELECTOR = '[data-tip]'
+const OUTLINE_SELECTOR = '.tk-aside-outline-item, .VPDocOutlineItem, .VPDocAsideOutline'
 
 const isTruncated = (el: HTMLElement) => el.scrollWidth - el.clientWidth > 1
 
+const isOutlineItem = (el: HTMLElement) => Boolean(el.closest(OUTLINE_SELECTOR))
+
 const upgradeNativeTitles = (root: ParentNode = document) => {
-  root.querySelectorAll<HTMLElement>(SOURCE_SELECTOR).forEach((el) => {
-    const title = el.getAttribute('title')
+  root.querySelectorAll<HTMLElement>(TITLE_SELECTOR).forEach((el) => {
+    if (el.closest('.wiki-tip')) return
+    const title = el.getAttribute('title')?.trim()
     if (!title) return
     el.setAttribute('data-tip', title)
     el.removeAttribute('title')
@@ -77,6 +62,10 @@ export const setupArticleMetaTooltip = (router: Router) => {
   }
 
   const show = (anchor: HTMLElement) => {
+    if (isOutlineItem(anchor) && !isTruncated(anchor)) {
+      hide()
+      return
+    }
     active = anchor
     placeTip(tip, anchor)
   }
@@ -88,17 +77,14 @@ export const setupArticleMetaTooltip = (router: Router) => {
     (event) => {
       const target = event.target
       if (!(target instanceof Element)) return
-      const withTitle = target.closest(SOURCE_SELECTOR)
-      if (withTitle instanceof HTMLElement) upgradeNativeTitles(withTitle.parentElement ?? document)
+      if (target.closest('.wiki-tip')) return
 
-      const meta = target.closest(META_TIP_SELECTOR)
-      if (meta instanceof HTMLElement) {
-        show(meta)
-        return
-      }
+      const titled = target.closest(`${TITLE_SELECTOR}, ${TIP_SELECTOR}`)
+      if (!(titled instanceof HTMLElement)) return
 
-      const outline = target.closest(OUTLINE_TIP_SELECTOR)
-      if (outline instanceof HTMLElement && isTruncated(outline)) show(outline)
+      upgradeNativeTitles(titled)
+      if (!titled.hasAttribute('data-tip')) return
+      show(titled)
     },
     true
   )
